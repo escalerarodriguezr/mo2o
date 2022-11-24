@@ -22,6 +22,12 @@ services:
         exclude:
 #            - '../src/DependencyInjection/'
 
+    #Domain
+    #Bus
+    _instanceof:
+        Mo2o\Domain\Shared\Bus\Query\QueryHandler:
+            tags:
+                - { name: messenger.message_handler, bus: query.bus }
 
     #Infrastructure
     #Listener
