@@ -23,5 +23,8 @@ services:
 #            - '../src/DependencyInjection/'
 
 
-    # add more service definitions when explicit configuration is needed
-    # please note that last definitions always *replace* previous ones
+    #Infrastructure
+    #Listener
+    Mo2o\Infrastructure\Ui\Http\Listener\Shared\JsonTransformerExceptionListener:
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: 100 }
