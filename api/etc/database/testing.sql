@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS beer_db_test;
+GRANT ALL PRIVILEGES ON beer_db_test.* TO 'root' IDENTIFIED BY 'root';
