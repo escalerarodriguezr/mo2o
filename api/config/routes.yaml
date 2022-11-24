@@ -3,3 +3,11 @@ get_health_check:
     path: /api/v1/health-check
     controller: App\Controller\HealthCheck\HealthCheckController
     methods: [GET]
+
+#Beer
+get_beer_by_id:
+    path: /api/v1/beer/{id}
+    controller: App\Controller\Beer\GetBeerByIdController
+    requirements:
+        id: '\d+'
+    methods: [GET]
