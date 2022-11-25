@@ -9,6 +9,8 @@ use Mo2o\Domain\Beer\Repository\BeerFilter;
 use Mo2o\Domain\Beer\Repository\BeerRepository;
 use Mo2o\Infrastructure\Repository\PunkApi\Exception\PunkApiException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Contracts\Cache\CacheInterface;
+use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
 final class PunkApiBeerRepository implements BeerRepository
@@ -16,61 +18,74 @@ final class PunkApiBeerRepository implements BeerRepository
     const BASE_END_POINT = 'https://api.punkapi.com/v2/beers';
 
     public function __construct(
-        private readonly HttpClientInterface $client
+        private readonly HttpClientInterface $client,
+        private readonly CacheInterface $cache
     )
     {
     }
 
     public function findById(int $id): Beer
     {
-        $response = $this->client->request(
-            Request::METHOD_GET,
-            sprintf('%s/%d',self::BASE_END_POINT,$id)
-        );
 
-        $statusCode = $response->getStatusCode();
+        return $this->cache->get('beer_' . $id, function (ItemInterface $item) use ($id) {
+            $item->expiresAfter(3600);
 
-        if( $statusCode == 404){
-            BeerNotFoundException::fromId($id);
-        }
+            $response = $this->client->request(
+                Request::METHOD_GET,
+                sprintf('%s/%d',self::BASE_END_POINT,$id)
+            );
 
-        if( $statusCode != 200 ){
-            PunkApiException::fromHttpClient($statusCode);
-        }
+            $statusCode = $response->getStatusCode();
 
-        return self::beerInfrastructureToModel(
-            $response->toArray()[0]
-        );
+            if( $statusCode == 404){
+                BeerNotFoundException::fromId($id);
+            }
+
+            if( $statusCode != 200 ){
+                PunkApiException::fromHttpClient($statusCode);
+            }
+
+            return self::beerInfrastructureToModel(
+                $response->toArray()[0]
+            );
+        });
 
     }
 
     public function searchByFilter(BeerFilter $filter): array
     {
-        $searchEndPoint = self::BASE_END_POINT;
+
+        $queryParams = '?';
 
         if( !empty($filter->filterByFood) ){
-            $searchEndPoint .= '?food='. $filter->filterByFood;
+            $queryParams .= 'food='. $filter->filterByFood;
         }
 
-        $response = $this->client->request(
-            Request::METHOD_GET,
-            $searchEndPoint
-        );
+        $searchEndPoint = self::BASE_END_POINT . $queryParams;
 
-        $statusCode = $response->getStatusCode();
+        return $this->cache->get('beers_' . $queryParams, function (ItemInterface $item) use ($queryParams, $searchEndPoint) {
+            $item->expiresAfter(3600);
 
+            $response = $this->client->request(
+                Request::METHOD_GET,
+                $searchEndPoint
+            );
 
-        if( $statusCode != 200 ){
-            PunkApiException::fromHttpClient($statusCode);
-        }
+            $statusCode = $response->getStatusCode();
 
-        $beerArray = $response->toArray();
+            if ($statusCode != 200) {
+                PunkApiException::fromHttpClient($statusCode);
+            }
 
-        if( !count($beerArray) ){
-            return [];
-        }
+            $beerArray = $response->toArray();
 
-        return array_map(fn($beer) => self::beerInfrastructureToModel($beer), $beerArray);
+            if (!count($beerArray)) {
+                return [];
+            }
+
+            return array_map(fn($beer) => self::beerInfrastructureToModel($beer), $beerArray);
+
+        });
 
     }
 
