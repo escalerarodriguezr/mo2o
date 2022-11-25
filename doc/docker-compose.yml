@@ -1,0 +1,35 @@
+version: '3.5'
+services:
+  mo2o-doc-web:
+    container_name: mo2o-doc-web
+    build:
+      context: ./docker/nginx
+      args:
+        UID: $U_ID
+    ports:
+      - 2500:80
+    volumes:
+      - ./public:/appdata/www/public
+    depends_on:
+      - mo2o-doc-be
+    networks:
+      - mo2o-doc-network
+
+  mo2o-doc-be:
+    container_name: mo2o-doc-be
+    build:
+      context: docker/php
+      args:
+        UID: $U_ID
+    environment:
+      PHP_IDE_CONFIG: serverName=Docker
+      PHP_XDEBUG_ENABLED: 1
+    volumes:
+      - ./:/appdata/www
+      - ~/.ssh/id_rsa:/home/appuser/.ssh/id_rsa
+    networks:
+      - mo2o-doc-network
+
+networks:
+  mo2o-doc-network:
+    external: true

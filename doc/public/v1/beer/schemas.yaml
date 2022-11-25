@@ -1,0 +1,11 @@
+BeerResponse:
+  $ref: './beer/beerResponse.yaml'
+BeerSearchResponse:
+  $ref: './beer/beerSearchResponse.yaml'
+
+
+
+
+
+
+

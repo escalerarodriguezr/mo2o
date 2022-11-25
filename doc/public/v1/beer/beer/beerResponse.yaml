@@ -1,0 +1,26 @@
+type: object
+properties:
+  id:
+    type: integer
+    example: 2
+    description: BeerId
+  name:
+    type: string
+    example: "Buzz"
+    description: Beer Name
+  tagline:
+    type: string
+    example: "A Real Bitter Experience."
+    description: Beer Tagline
+  first_brewed:
+    type: string
+    example: "A09/2007"
+    description: Beer first_brewed
+  description:
+    type: string
+    example: "AA light, crisp and bitter IPA brewed with English and American hops. A small batch brewed only once."
+    description: Beer Description
+  image:url:
+    type: string
+    example: "https://images.punkapi.com/v2/keg.png"
+    description: Beer image_url
