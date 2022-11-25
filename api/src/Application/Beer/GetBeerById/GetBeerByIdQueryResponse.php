@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace Mo2o\Application\Beer\GetBeerById;
 
+use Mo2o\Domain\Beer\Model\Beer;
+
 class GetBeerByIdQueryResponse
 {
 
@@ -27,5 +29,17 @@ class GetBeerByIdQueryResponse
             'description' => $this->description,
             'image_url' => $this->image_url
         ];
+    }
+
+    public static function fromModel(Beer $beer): self
+    {
+        return new GetBeerByIdQueryResponse(
+            $beer->getId(),
+            $beer->getName(),
+            $beer->getTagline(),
+            $beer->getFirstBrewed(),
+            $beer->getDescription(),
+            $beer->getImageUrl()
+        );
     }
 }
