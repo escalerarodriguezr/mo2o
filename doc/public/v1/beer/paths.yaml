@@ -1,0 +1,59 @@
+/api/v1/beer/{id}:
+  get:
+    tags:
+      - Beer
+    summary: Get Beer
+    operationId: getBeer
+    style: simple
+    parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+          example: 1
+          description: BeerId
+        required: true
+    responses:
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/beer/BeerResponse"
+      '404':
+        $ref: "#/components/responses/ResourceNotFound"
+      '409':
+        $ref: "#/components/responses/ConflictException"
+      '500':
+        $ref: "#/components/responses/InternalError"
+
+/api/v1/beer:
+  get:
+    tags:
+      - Beer
+    summary: Search Beer
+    operationId: searchBeer
+    style: simple
+    parameters:
+      - in: query
+        name: food
+        schema:
+          type: string
+        example: Mis
+        description: Filter By Food
+        required: false
+    responses:
+      '200':
+        description: Successful operation
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "#/components/schemas/beer/BeerSearchResponse"
+      '404':
+        $ref: "#/components/responses/ResourceNotFound"
+      '409':
+        $ref: "#/components/responses/ConflictException"
+      '500':
+        $ref: "#/components/responses/InternalError"
