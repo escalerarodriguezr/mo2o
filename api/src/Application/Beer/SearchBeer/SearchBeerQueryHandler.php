@@ -8,7 +8,7 @@ use Mo2o\Domain\Beer\Repository\BeerFilter;
 use Mo2o\Domain\Beer\Repository\BeerRepository;
 use Mo2o\Domain\Shared\Bus\Query\QueryHandler;
 
-class SearchQueryHandler implements QueryHandler
+class SearchBeerQueryHandler implements QueryHandler
 {
     public function __construct(
         private readonly BeerRepository $beerRepository
