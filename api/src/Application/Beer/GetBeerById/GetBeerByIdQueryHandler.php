@@ -9,7 +9,6 @@ use Mo2o\Domain\Shared\Bus\Query\QueryHandler;
 class GetBeerByIdQueryHandler implements QueryHandler
 {
 
-
     public function __construct(
         private readonly BeerRepository $beerRepository
     )
@@ -25,16 +24,7 @@ class GetBeerByIdQueryHandler implements QueryHandler
             $query->id
         );
 
-        return new GetBeerByIdQueryResponse(
-            $beer->getId(),
-            $beer->getName(),
-            $beer->getTagline(),
-            $beer->getFirstBrewed(),
-            $beer->getDescription(),
-            $beer->getImageUrl()
-        );
-
+        return GetBeerByIdQueryResponse::fromModel($beer);
     }
-
 
 }

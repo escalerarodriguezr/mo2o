@@ -11,3 +11,8 @@ get_beer_by_id:
     requirements:
         id: '\d+'
     methods: [GET]
+
+get_search_beer:
+    path: /api/v1/beer
+    controller: App\Controller\Beer\GetSearchBeerController
+    methods: [GET]

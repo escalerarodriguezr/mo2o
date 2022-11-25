@@ -9,4 +9,11 @@ interface BeerRepository
 {
     public function findById(int $id): Beer;
 
+    /**
+     * @param BeerFilter $filter
+     * @return Beer []
+     */
+    public function searchByFilter(BeerFilter $filter): array;
+
+
 }
